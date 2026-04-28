@@ -107,6 +107,8 @@ class ZegoUIKitCoreData
     streamDic.clear();
     streamExtraInfo.clear();
 
+    leaveUsersList.clear();
+
     room.clear();
   }
 

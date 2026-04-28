@@ -34,6 +34,7 @@ mixin ZegoUserService {
         .map((user) => user.toZegoUikitUser())
         .toList();
   }
+
   /// get leave users which are not in room any more, not include local user
   List<ZegoUIKitUser> getLeaveUsers() {
     ZegoLoggerService.logInfo(
@@ -45,6 +46,16 @@ mixin ZegoUserService {
         .where((user) => !user.isAnotherRoomUser)
         .map((user) => user.toZegoUikitUser())
         .toList();
+  }
+
+  void clearLeaveUsers() {
+    ZegoLoggerService.logInfo(
+      'clear leave users, leave users:${ZegoUIKitCore.shared.coreData.leaveUsersList}',
+      tag: 'uikit-user',
+      subTag: 'getLeaveUsers',
+    );
+
+    ZegoUIKitCore.shared.coreData.leaveUsersList.clear();
   }
 
   /// get leave users cache for the specified room

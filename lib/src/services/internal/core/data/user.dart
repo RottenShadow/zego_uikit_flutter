@@ -148,6 +148,8 @@ mixin ZegoUIKitCoreDataUser {
 
     localUser.clear();
 
+    leaveUsersList.clear();
+
     _userLeaveStreamCtrl?.add([localUser]);
     _userListStreamCtrl?.add(remoteUsersList);
   }

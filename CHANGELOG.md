@@ -1,7 +1,17 @@
+## 2.28.47
+
+- Bugs
+    - Fixed the issue where the user list was not correctly cleared in specific scenarios after leaving.
+
+## 2.28.46
+
+- Features
+    - Add support for room leaving user cache by stream events
+
 ## 2.28.45
 
 - Features
-    - Add support for room leaving user cache
+    - Add support for room leaving user cache by user events
 
 ## 2.28.44
 

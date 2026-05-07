@@ -1,3 +1,8 @@
+## 2.29.0
+
+- Features
+    - Add audio 3A configuration APIs with logging (enableAEC, enableHeadphoneAEC, setAECMode, enableAGC, enableANS, enableTransientANS, setANSMode)
+
 ## 2.28.47
 
 - Bugs

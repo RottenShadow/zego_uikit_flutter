@@ -1270,6 +1270,76 @@ class ZegoUIKitCore
     coreData.channelAudioConfig[streamType] = config;
   }
 
+  /// Audio 3A - Enable/disable echo cancellation (AEC)
+  void enableAEC(bool enable) {
+    ZegoLoggerService.logInfo(
+      'enable:$enable',
+      tag: 'uikit-audio',
+      subTag: 'enable AEC',
+    );
+    ZegoExpressEngine.instance.enableAEC(enable);
+  }
+
+  /// Audio 3A - Enable/disable echo cancellation when using headphones
+  void enableHeadphoneAEC(bool enable) {
+    ZegoLoggerService.logInfo(
+      'enable:$enable',
+      tag: 'uikit-audio',
+      subTag: 'enable headphone AEC',
+    );
+    ZegoExpressEngine.instance.enableHeadphoneAEC(enable);
+  }
+
+  /// Audio 3A - Set echo cancellation mode
+  void setAECMode(ZegoAECMode mode) {
+    ZegoLoggerService.logInfo(
+      'mode:$mode',
+      tag: 'uikit-audio',
+      subTag: 'set AEC mode',
+    );
+    ZegoExpressEngine.instance.setAECMode(mode);
+  }
+
+  /// Audio 3A - Enable/disable automatic gain control (AGC)
+  void enableAGC(bool enable) {
+    ZegoLoggerService.logInfo(
+      'enable:$enable',
+      tag: 'uikit-audio',
+      subTag: 'enable AGC',
+    );
+    ZegoExpressEngine.instance.enableAGC(enable);
+  }
+
+  /// Audio 3A - Enable/disable noise suppression (ANS)
+  void enableANS(bool enable) {
+    ZegoLoggerService.logInfo(
+      'enable:$enable',
+      tag: 'uikit-audio',
+      subTag: 'enable ANS',
+    );
+    ZegoExpressEngine.instance.enableANS(enable);
+  }
+
+  /// Audio 3A - Enable/disable transient noise suppression
+  void enableTransientANS(bool enable) {
+    ZegoLoggerService.logInfo(
+      'enable:$enable',
+      tag: 'uikit-audio',
+      subTag: 'enable transient ANS',
+    );
+    ZegoExpressEngine.instance.enableTransientANS(enable);
+  }
+
+  /// Audio 3A - Set noise suppression mode
+  void setANSMode(ZegoANSMode mode) {
+    ZegoLoggerService.logInfo(
+      'mode:$mode',
+      tag: 'uikit-audio',
+      subTag: 'set ANS mode',
+    );
+    ZegoExpressEngine.instance.setANSMode(mode);
+  }
+
   Future<void> setVideoConfig(
     ZegoUIKitVideoConfig config,
     ZegoStreamType streamType,

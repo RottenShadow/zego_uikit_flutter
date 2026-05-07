@@ -54,6 +54,79 @@ mixin ZegoAudioVideoService {
     await ZegoUIKitCore.shared.setAudioConfig(config, streamType: streamType);
   }
 
+  /// Audio 3A - Enable/disable echo cancellation (AEC)
+  ///
+  /// After calling this method, the SDK will no longer automatically determine whether to enable echo cancellation.
+  ///
+  /// Call this method at: After joining a room
+  ///
+  /// @param enable true to enable echo cancellation, false to disable
+  void enableAEC(bool enable) {
+    ZegoUIKitCore.shared.enableAEC(enable);
+  }
+
+  /// Audio 3A - Enable/disable echo cancellation when using headphones
+  ///
+  /// Recommended for voice chat and gaming scenarios.
+  ///
+  /// Call this method at: After joining a room
+  ///
+  /// @param enable true to enable headphone AEC, false to disable (default)
+  void enableHeadphoneAEC(bool enable) {
+    ZegoUIKitCore.shared.enableHeadphoneAEC(enable);
+  }
+
+  /// Audio 3A - Set echo cancellation mode
+  ///
+  /// Call this method at: After enabling AEC (enableAEC(true))
+  ///
+  /// @param mode AEC mode: Aggressive, Medium, or Soft
+  void setAECMode(ZegoAECMode mode) {
+    ZegoUIKitCore.shared.setAECMode(mode);
+  }
+
+  /// Audio 3A - Enable/disable automatic gain control (AGC)
+  ///
+  /// Recommended to disable in music scenarios.
+  ///
+  /// Call this method at: After joining a room
+  ///
+  /// @param enable true to enable AGC, false to disable
+  void enableAGC(bool enable) {
+    ZegoUIKitCore.shared.enableAGC(enable);
+  }
+
+  /// Audio 3A - Enable/disable noise suppression (ANS)
+  ///
+  /// Helps make voice clearer.
+  ///
+  /// Call this method at: After joining a room
+  ///
+  /// @param enable true to enable ANS, false to disable
+  void enableANS(bool enable) {
+    ZegoUIKitCore.shared.enableANS(enable);
+  }
+
+  /// Audio 3A - Enable/disable transient noise suppression
+  ///
+  /// Helps suppress transient noises such as keyboard typing and tapping.
+  ///
+  /// Call this method at: After joining a room
+  ///
+  /// @param enable true to enable transient ANS, false to disable (default)
+  void enableTransientANS(bool enable) {
+    ZegoUIKitCore.shared.enableTransientANS(enable);
+  }
+
+  /// Audio 3A - Set noise suppression mode
+  ///
+  /// Call this method at: After enabling ANS (enableANS(true))
+  ///
+  /// @param mode ANS mode: Aggressive, Medium (default), or Soft
+  void setANSMode(ZegoANSMode mode) {
+    ZegoUIKitCore.shared.setANSMode(mode);
+  }
+
   /// update video config
   Future<void> setVideoConfig(
     ZegoUIKitVideoConfig config, {

@@ -106,10 +106,6 @@ mixin ZegoAudioVideoService {
   void enableANS(bool enable) {
     ZegoUIKitCore.shared.enableANS(enable);
   }
-      subTag: 'audio video service',
-    );
-    ZegoExpressEngine.instance.enableANS(enable);
-  }
 
   /// Audio 3A - Enable/disable transient noise suppression
   ///

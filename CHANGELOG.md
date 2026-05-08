@@ -1,7 +1,17 @@
 ## 2.29.0
 
 - Features
-    - Add audio 3A configuration APIs with logging (enableAEC, enableHeadphoneAEC, setAECMode, enableAGC, enableANS, enableTransientANS, setANSMode)
+    - Add audio 3A configuration APIs 
+        - enableAEC
+        - enableHeadphoneAEC
+        - setAECMode
+        - enableAGC
+        - enableANS
+        - enableTransientANS
+        - setANSMode
+    ``` dart
+    ZegoUIKit().enableAEC(true);
+    ```
 
 ## 2.28.47
 

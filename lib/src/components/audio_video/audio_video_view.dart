@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:native_device_orientation/native_device_orientation.dart';
+import 'package:zego_express_engine/zego_express_engine.dart';
 
 // Project imports:
 import 'package:zego_uikit/src/components/audio_video/avatar/avatar.dart';
@@ -26,7 +27,7 @@ import 'package:zego_uikit/src/services/services.dart';
 /// 3. foreground view
 class ZegoAudioVideoView extends StatefulWidget {
   const ZegoAudioVideoView({
-    Key? key,
+    super.key,
     required this.user,
     this.backgroundBuilder,
     this.foregroundBuilder,
@@ -34,7 +35,8 @@ class ZegoAudioVideoView extends StatefulWidget {
     this.borderColor,
     this.extraInfo,
     this.avatarConfig,
-  }) : super(key: key);
+    this.videoViewMode,
+  });
 
   final ZegoUIKitUser? user;
 
@@ -51,6 +53,15 @@ class ZegoAudioVideoView extends StatefulWidget {
 
   final ZegoAvatarConfig? avatarConfig;
 
+  /// Force the fill mode of the video/preview rendered by this view.
+  ///
+  /// When set, it overrides the global
+  /// [ZegoUIKit.updateVideoViewMode]/`useVideoViewAspectFill` default
+  /// (AspectFit) for this view only, e.g. to render a user's camera/video
+  /// with [ZegoViewMode.aspectFill] inside a PK host cell. When `null`, the
+  /// global setting is used.
+  final ZegoViewMode? videoViewMode;
+
   @override
   State<ZegoAudioVideoView> createState() => _ZegoAudioVideoViewState();
 }
@@ -58,6 +69,8 @@ class ZegoAudioVideoView extends StatefulWidget {
 class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
   Timer? viewIDGuardTimer;
   final isLocalUserFlippedNotifier = ValueNotifier<bool>(false);
+  ZegoViewMode? _appliedViewMode;
+  int? _appliedViewID;
 
   int get userViewID =>
       ZegoUIKit().getAudioVideoViewIDNotifier(widget.user?.id ?? '').value ??
@@ -110,6 +123,67 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
 
   void onAudioVideoListUpdated(List<ZegoUIKitUser> users) {
     setState(() {});
+  }
+
+  void scheduleApplyVideoViewMode() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      _applyVideoViewMode();
+    });
+  }
+
+  Future<void> _applyVideoViewMode() async {
+    final mode = widget.videoViewMode;
+    if (mode == null || userViewIDIsEmpty) {
+      return;
+    }
+
+    final viewID = userViewID;
+    if (_appliedViewID == viewID && _appliedViewMode == mode) {
+      return;
+    }
+
+    final userID = widget.user?.id ?? '';
+    if (userID.isEmpty) {
+      return;
+    }
+
+    if (ZegoUIKit().getLocalUser().id == userID) {
+      await ZegoExpressEngine.instance.startPreview(
+        canvas: ZegoCanvas(viewID, viewMode: mode),
+        channel: ZegoPublishChannel.Main,
+      );
+    } else {
+      if (Platform.isIOS && ZegoUIKitCore.shared.playingStreamInPIPUnderIOS) {
+        return;
+      }
+
+      final streamID = getRemoteUserStreamID(userID);
+      if (streamID.isEmpty) {
+        return;
+      }
+
+      await ZegoExpressEngine.instance.updatePlayingCanvas(
+        streamID,
+        ZegoCanvas(viewID, viewMode: mode),
+      );
+    }
+
+    _appliedViewID = viewID;
+    _appliedViewMode = mode;
+  }
+
+  String getRemoteUserStreamID(String userID) {
+    for (final user in ZegoUIKitCore.shared.coreData.remoteUsersList) {
+      if (user.id == userID) {
+        return user.mainChannel.streamID;
+      }
+    }
+
+    return '';
   }
 
   @override
@@ -168,6 +242,10 @@ class _ZegoAudioVideoViewState extends State<ZegoAudioVideoView> {
                     testViewID(),
                   ],
                 );
+
+          if (isCameraOn && null != widget.videoViewMode) {
+            scheduleApplyVideoViewMode();
+          }
 
           return SizedBox.expand(
             child: (isLocalUser && isCameraOn)

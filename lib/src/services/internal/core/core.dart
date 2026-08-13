@@ -773,6 +773,27 @@ class ZegoUIKitCore
     });
   }
 
+  /// Set the local camera zoom factor, the minimum value is 1.0 and the
+  /// maximum value is the return value of [getCameraMaxZoomFactor].
+  Future<void> setCameraZoomFactor(
+    double factor, {
+    ZegoPublishChannel? channel,
+  }) async {
+    return ZegoExpressEngine.instance.setCameraZoomFactor(
+      factor,
+      channel: channel,
+    );
+  }
+
+  /// Get the maximum zoom factor supported by the local camera.
+  Future<double> getCameraMaxZoomFactor({
+    ZegoPublishChannel? channel,
+  }) async {
+    return ZegoExpressEngine.instance.getCameraMaxZoomFactor(
+      channel: channel,
+    );
+  }
+
   Future<bool> useFrontFacingCamera(
     bool isFrontFacing, {
     bool ignoreCameraStatus = false,

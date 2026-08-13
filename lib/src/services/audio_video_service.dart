@@ -189,6 +189,27 @@ mixin ZegoAudioVideoService {
     );
   }
 
+  /// Set the local camera zoom factor, the minimum value is 1.0 and the
+  /// maximum value is the return value of [getCameraMaxZoomFactor].
+  Future<void> setCameraZoomFactor(
+    double factor, {
+    ZegoPublishChannel? channel,
+  }) async {
+    return ZegoUIKitCore.shared.setCameraZoomFactor(
+      factor,
+      channel: channel,
+    );
+  }
+
+  /// Get the maximum zoom factor supported by the local camera.
+  Future<double> getCameraMaxZoomFactor({
+    ZegoPublishChannel? channel,
+  }) async {
+    return ZegoUIKitCore.shared.getCameraMaxZoomFactor(
+      channel: channel,
+    );
+  }
+
   /// set video mirror mode
   void enableVideoMirroring(bool isVideoMirror) {
     ZegoUIKitCore.shared.enableVideoMirroring(isVideoMirror);

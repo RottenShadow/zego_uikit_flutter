@@ -155,13 +155,27 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
 
   void appendAdvanceInvitationData(AdvanceInvitationData invitationData) {
     if (advanceInvitationMap.containsKey(invitationData.id)) {
-      advanceInvitationMap[invitationData.id]!
-          .invitees
-          .addAll(invitationData.invitees);
+      final session = advanceInvitationMap[invitationData.id]!;
+      for (final newInvitee in invitationData.invitees) {
+        final existingInvitee =
+            getAdvanceInvitee(invitationData.id, newInvitee.userID);
+        if (null == existingInvitee) {
+          session.invitees.add(newInvitee);
+        } else {
+          /// Re-adding a host who previously disconnected/quitted this session:
+          /// reset their stale state (idle/offline/rejected) back to waiting
+          /// instead of appending a duplicate. Duplicate invitees keep the
+          /// session from ever being cleared from the map and make the host
+          /// look permanently "in a PK", which breaks later invites to that
+          /// host ("all user is in PK or requesting").
+          existingInvitee.state = newInvitee.state;
+          existingInvitee.extendedData = newInvitee.extendedData;
+        }
+      }
 
       ZegoLoggerService.logInfo(
         'append invitation data $invitationData,'
-        'now ${invitationData.id}\'s invitees is ${advanceInvitationMap[invitationData.id]!.invitees}',
+        'now ${session.id}\'s invitees is ${session.invitees}',
         tag: 'uikit-plugin-signaling',
         subTag: 'advance invitation data',
       );
@@ -499,7 +513,10 @@ mixin ZegoSignalingPluginCoreAdvanceInvitationData {
           });
 
           final errorUserIDs = result.errorInvitees.keys.toList();
-          for (final invitee in invitationData.invitees) {
+
+          /// Mark the session's real invitees (post-dedupe: re-added hosts may
+          /// have been merged into an existing entry instead of appended).
+          for (final invitee in getAdvanceInvitees(result.invitationID)) {
             if (errorUserIDs.contains(invitee.userID)) {
               invitee.state = AdvanceInvitationState.error;
             }

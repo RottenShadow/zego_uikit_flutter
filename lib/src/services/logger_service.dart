@@ -4,7 +4,15 @@ part of 'uikit_service.dart';
 mixin ZegoLoggerService {
   static bool isZegoLoggerInit = false;
 
+  /// Logging is disabled entirely in release builds: it is a compile-time
+  /// constant, so the AOT compiler strips the dead branches below.
+  static const bool _logEnabled = !kReleaseMode;
+
   Future<void> initLog() async {
+    if (!_logEnabled) {
+      return;
+    }
+
     if (isZegoLoggerInit) {
       return;
     }
@@ -90,6 +98,10 @@ mixin ZegoLoggerService {
     String tag = '',
     String subTag = '',
   }) async {
+    if (!_logEnabled) {
+      return;
+    }
+
     if (!isZegoLoggerInit) {
       debugPrint('[INFO] ${DateTime.now()} [$tag] [$subTag] $logMessage');
       return;
@@ -103,6 +115,10 @@ mixin ZegoLoggerService {
     String tag = '',
     String subTag = '',
   }) async {
+    if (!_logEnabled) {
+      return;
+    }
+
     if (!isZegoLoggerInit) {
       debugPrint('[WARN] ${DateTime.now()} [$tag] [$subTag] $logMessage');
       return;
@@ -116,6 +132,10 @@ mixin ZegoLoggerService {
     String tag = '',
     String subTag = '',
   }) async {
+    if (!_logEnabled) {
+      return;
+    }
+
     if (!isZegoLoggerInit) {
       debugPrint('[ERROR] ${DateTime.now()} [$tag] [$subTag] $logMessage');
       return;
@@ -130,6 +150,10 @@ mixin ZegoLoggerService {
     String tag = '',
     String subTag = '',
   }) async {
+    if (!_logEnabled) {
+      return;
+    }
+
     if (!isZegoLoggerInit) {
       debugPrint('[ERROR] ${DateTime.now()} [$tag] [$subTag] $logMessage');
       return;

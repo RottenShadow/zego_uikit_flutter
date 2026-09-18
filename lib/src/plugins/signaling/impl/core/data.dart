@@ -492,12 +492,11 @@ class ZegoSignalingPluginCoreData
 
     if (event.state == ZegoSignalingPluginConnectionState.disconnected) {
       ZegoLoggerService.logInfo(
-        'disconnected, auto logout',
+        'disconnected, state cleared by event_center; '
+        'auto-logout removed — reconnectAll handles reconnection',
         tag: 'uikit-plugin-signaling',
         subTag: 'core data',
       );
-      // TODO 这个逻辑怎么搞 zimkit一起用的话估计是有问题的
-      logout();
     }
   }
 

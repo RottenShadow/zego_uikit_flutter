@@ -842,6 +842,9 @@ class ZegoUIKitCore
         false;
     coreData.localUser.mainChannel.isCapturedVideoFirstFrameNotifier
         .addListener(onCapturedVideoFirstFrameAfterSwitchCamera);
+    coreData.frontCameraRequestGuardTimer?.cancel();
+    coreData.frontCameraRequestGuardTimer =
+        Timer(const Duration(milliseconds: 1500), finishFrontCameraSwitch);
     coreData.localUser.mainChannel.isRenderedVideoFirstFrameNotifier.value =
         false;
 
@@ -864,16 +867,35 @@ class ZegoUIKitCore
   }
 
   void onCapturedVideoFirstFrameAfterSwitchCamera() {
-    coreData.localUser.mainChannel.isCapturedVideoFirstFrameNotifier
-        .removeListener(onCapturedVideoFirstFrameAfterSwitchCamera);
-
-    coreData.isUsingFrontCameraRequesting = false;
+    finishFrontCameraSwitch();
 
     ZegoLoggerService.logInfo(
       'onCapturedVideoFirstFrameAfterSwitchCamera',
       tag: 'uikit-camera',
       subTag: 'use front facing camera',
     );
+  }
+
+  /// Releases the switch-camera guard, either on the captured-first-frame
+  /// callback or by a timer fallback, because that callback is not guaranteed
+  /// to re-fire after useFrontCamera (iOS preview never re-fires it), which
+  /// would otherwise lock camera flipping forever.
+  void finishFrontCameraSwitch() {
+    coreData.frontCameraRequestGuardTimer?.cancel();
+    coreData.frontCameraRequestGuardTimer = null;
+
+    coreData.localUser.mainChannel.isCapturedVideoFirstFrameNotifier
+        .removeListener(onCapturedVideoFirstFrameAfterSwitchCamera);
+
+    if (coreData.isUsingFrontCameraRequesting) {
+      coreData.isUsingFrontCameraRequesting = false;
+
+      ZegoLoggerService.logInfo(
+        'switch-camera guard released',
+        tag: 'uikit-camera',
+        subTag: 'use front facing camera',
+      );
+    }
   }
 
   void enableVideoMirroring(bool isVideoMirror) {

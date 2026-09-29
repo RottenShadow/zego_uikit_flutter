@@ -45,6 +45,7 @@ mixin ZegoUIKitCoreDataStream {
   bool isPreviewing = false;
   bool isEnableCustomVideoRender = false;
   bool isUsingFrontCameraRequesting = false;
+  Timer? frontCameraRequestGuardTimer;
   bool isSyncDeviceStatusBySEI = true;
   Map<ZegoStreamType, ZegoUIKitAudioConfig> channelAudioConfig = {};
 
